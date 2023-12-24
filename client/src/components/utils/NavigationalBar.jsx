@@ -17,7 +17,6 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 const NavigationalBar = ({ logout }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.pathname);
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh", width: "300px" }}>
       <Box sx={{ backgroundColor: "#f5f5f5", width: "250px", padding: "20px" }}>
@@ -103,7 +102,7 @@ const NavigationalBar = ({ logout }) => {
             <ListItemButton
               onClick={() => navigate(`/profile/${Cookies.get("token")}`)}
               sx={{
-                backgroundColor: location.pathname.startsWith("/profile/")
+                backgroundColor: location.pathname === `/profile/${Cookies.get("token")}`
                   ? "#ddd"
                   : "transparent",
               }}

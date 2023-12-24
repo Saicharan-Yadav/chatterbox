@@ -11,99 +11,25 @@ import {
   Button,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
-
-const fakeData = [
-  {
-    id: 17,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "LunaStar",
-  },
-  {
-    id: 18,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "CloudDancer777",
-  },
-  {
-    id: 19,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "EmeraldEmber",
-  },
-  {
-    id: 20,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "WhisperingWillow",
-  },
-  {
-    id: 21,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "BookishBard",
-  },
-  {
-    id: 22,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "SkybornSeeker",
-  },
-  {
-    id: 23,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "TwinklingTrailblazer",
-  },
-  {
-    id: 24,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "CosmicConstellation",
-  },
-  {
-    id: 25,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "MountainWhisperer",
-  },
-  {
-    id: 26,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "StarlitStoryteller",
-  },
-  {
-    id: 27,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "DreamweaverDawn",
-  },
-  {
-    id: 28,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "OceanEchoes",
-  },
-  {
-    id: 29,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "Windrider",
-  },
-  {
-    id: 30,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "MoonlightMuse",
-  },
-  {
-    id: 31,
-    dp: "https://random.imagecdn.app/150/150",
-    username: "SunseekerSage",
-  },
-];
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchTerm === "") {
       setSearchResults([]);
       return;
     }
-    const results = fakeData.filter((user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
-  }, [searchTerm]);
+    axios
+      .get(`http://localhost:5000/user/search/${searchTerm}`)
+      .then((res) => {
+        setSearchResults(res.data.users);
+      });
+  }, [searchTerm, setSearchResults]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -164,9 +90,23 @@ const SearchPage = () => {
                   src={user.dp}
                 />
                 <Typography variant="h6">{user.username}</Typography>
-                <Button variant="outlined" sx={{ marginTop: "10px" }}>
-                  Add Friend
-                </Button>
+                {user.isFriend ? (
+                  <Button
+                    variant="contained"
+                    sx={{ marginTop: "10px" }}
+                    // onClick={() => navigate(`/chat/${user.username}`)}
+                  >
+                    Message
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{ marginTop: "10px" }}
+                    onClick={() => navigate(`/profile/${user.username}`)}
+                  >
+                    View Profile
+                  </Button>
+                )}
               </Box>
             </CardContent>
           </Card>

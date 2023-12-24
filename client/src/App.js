@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 import LandingPage from "./components/LandingPage/LandingPage";
 import SignUpPage from "./components/LandingPage/SignUpPage";
 import MainPage from "./components/MainPage/MainPage";
 
 function App() {
+  axios.defaults.withCredentials = true;
   const [user, setUser] = useState(false);
 
   useEffect(() => {

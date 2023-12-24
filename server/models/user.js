@@ -22,28 +22,46 @@ const userSchema = new Schema({
       ref: "User",
     },
   ],
-    dp: String,
-    posts: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Post'
-    }],
-    comments: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Comment'
-    }],
-    likedPosts: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Post'
-    }],
-    requested: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    pending: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    bio: String,
+  postsFeed: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
+  dp: String,
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
+  likedPosts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
+  requested: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  pending: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  bio: String,
+  isFriend: Boolean,
+  isRequested: Boolean,
 });
 
 const User = mongoose.model("User", userSchema);

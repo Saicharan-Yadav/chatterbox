@@ -17,6 +17,8 @@ const ProfilePage = ({ username }) => {
     username: "",
     dp: "",
     posts: [],
+    friends: [],
+    owner: false,
   });
 
   useEffect(() => {
@@ -25,10 +27,10 @@ const ProfilePage = ({ username }) => {
       return;
     }
     axios
-      .get(`http://localhost:5000/user/${username}`)
+      .get(`http://localhost:5000/user/profile/${username}`)
       .then((res) => {
         if (res.status === 200) {
-          setUser(res.data.user);
+          setUser(res.data.data);
         } else {
           alert(res.data.msg);
         }
@@ -149,30 +151,70 @@ const ProfilePage = ({ username }) => {
               marginTop: "10px",
             }}
           >
-            <Button variant="contained" startIcon={<Edit />}>
-              Edit Profile
-            </Button>
+            {user?.owner ? (
+              <Button variant="contained" startIcon={<Edit />}>
+                Edit Profile
+              </Button>
+            ) : (
+              <>
+                {user?.isRequested ? (
+                  <Button variant="contained" disabled>
+                    Requested
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    sx={{ color: "#000" }}
+                    onClick={() => {
+                      axios.get(
+                        `http://localhost:5000/user/add-friend/${user.username}`
+                      );
+                      setUser({ ...user, isRequested: true });
+                    }}
+                  >
+                    Add Friend
+                  </Button>
+                )}
+              </>
+            )}
           </Box>
         </Box>
       </Box>
       <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "24px" }}>
         Posts
       </Typography>
-
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginTop: "10px",
-        }}
-      >
-        {user?.posts.map((post, i) => (
-          <Card key={i} sx={{ borderRadius: "5px", width: "30%" }}>
-            <CardMedia component="img" image={post.image} alt="Post image" />
-          </Card>
-        ))}
-      </Box>
+      {user?.isFriend ? (
+        <Box
+          sx={{
+            display: "flex",
+            gap: "30px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {user?.posts?.map((post) => (
+            <Card
+              sx={{
+                width: "300px",
+                height: "300px",
+                margin: "10px",
+                position: "relative",
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="100%"
+                image={post.image}
+                alt={post.title}
+              />
+            </Card>
+          ))}
+        </Box>
+      ) : (
+        <Typography variant="body1">
+          Only friends can see posts
+        </Typography>
+      )}
     </Box>
   );
 };
