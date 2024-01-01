@@ -2,30 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Box, Tabs, Tab, Typography, Avatar, Button } from "@mui/material";
 import axios from "axios";
 
-const friendRequests = [
-  {
-    id: 1,
-    dp: "https://random.imagecdn.app/50/50",
-    username: "John Doe",
-  },
-  {
-    id: 2,
-    dp: "https://random.imagecdn.app/50/50",
-    username: "Jane Doe",
-  },
-  {
-    id: 3,
-    dp: "https://random.imagecdn.app/50/50",
-    username: "John Smith",
-    sender: true,
-  },
-  {
-    id: 4,
-    dp: "https://random.imagecdn.app/50/50",
-    username: "Jane Smith",
-  },
-];
-
 const FriendRequestsPage = () => {
   const [currentTab, setCurrentTab] = useState("sent");
   const [requests, setRequests] = useState([]);
@@ -49,6 +25,45 @@ const FriendRequestsPage = () => {
     };
     getRequests();
   }, [currentTab]);
+
+  const handleAccept = (username) => {
+    axios
+      .get(`http://localhost:5000/user/accept-request/${username}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setRequests(requests.filter((user) => user.username !== username));
+        } else {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleIgnore = (username) => {
+    axios
+      .get(`http://localhost:5000/user/reject-request/${username}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setRequests(requests.filter((user) => user.username !== username));
+        } else {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleCancel = (username) => {
+    axios
+      .get(`http://localhost:5000/user/cancel-request/${username}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setRequests(requests.filter((user) => user.username !== username));
+        } else {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleTabChange = (event, newTab) => {
     setCurrentTab(newTab);
@@ -83,16 +98,28 @@ const FriendRequestsPage = () => {
               </Box>
               {currentTab === "received" ? (
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button variant="outlined" size="small">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleAccept(user.username)}
+                  >
                     Accept
                   </Button>
-                  <Button variant="outlined" size="small">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleIgnore(user.username)}
+                  >
                     Ignore
                   </Button>
                 </Box>
               ) : (
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button variant="outlined" size="small">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleCancel(user.username)}
+                  >
                     cancel
                   </Button>
                 </Box>

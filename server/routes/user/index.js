@@ -6,20 +6,27 @@ const Post = require("../../models/post");
 
 router.get("/profile/:id", async (req, res) => {
   const token = await req.cookies.token;
-  const user = await User.findOne({ username: req.params.id }).populate("pending");
-  if (!user) {
-    return res.status(404).json({ msg: "User not found" });
-  }
-  if (user.friends.includes(token) || user.username === token) {
-    user.isFriend = true;
-    user.isRequested = false;
-  }else if(user.pending.includes(token)){
-    user.isRequested = true;
-    user.isFriend = false;
-  } else {
-    user.isFriend = false;
-    user.isRequested = false;
-  }
+  const you = await User.findOne({ username: token });
+  const user = await User.findOne({ username: req.params.id })
+    .populate("pending")
+    .populate("requested")
+    .populate("friends");
+
+  user.friends.forEach((friend) => {
+    if (friend.username === you.username) {
+      user.isFriend = true;
+    }
+  });
+  user.pending.forEach((pending) => {
+    if (pending.username === you.username) {
+      user.isPending = true;
+    }
+  });
+  user.requested.forEach((requested) => {
+    if (requested.username === you.username) {
+      user.isRequested = true;
+    }
+  });
   const data = {
     username: user.username,
     dp: user.dp,
@@ -28,28 +35,25 @@ router.get("/profile/:id", async (req, res) => {
     owner: token === user.username,
     isFriend: user.isFriend,
     isRequested: user.isRequested,
+    isPending: user.isPending,
   };
   res.status(200).json({ data });
 });
 
-router.post("/new-post", (req, res) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-    image: req.body.image,
-    likes: req.body.likes,
-  });
-  post.save().then((post) => {
-    res.json(post);
-  });
-});
-
-router.get("/post/:id", (req, res) => {
-  Post.findById(req.params.id)
-    .populate("comments")
-    .then((post) => {
-      res.json(post);
+router.get("/feed", async (req, res) => {
+  const token = await req.cookies.token;
+  const user = await User.findOne({ username: token }).populate("postsFeed");
+  const data = [];
+  user.postsFeed.forEach((post) => {
+    data.push({
+      description: post.description,
+      image: post.image,
+      likes: post.likes,
+      comments: post.comments,
+      id: post._id,
     });
+  });
+  res.status(200).json({ data });
 });
 
 // search user by username
@@ -83,7 +87,7 @@ router.get("/requests/sent", async (req, res) => {
     });
     res.status(200).json(data);
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     res.status(400).json({ msg: error.message });
   }
 });
@@ -125,7 +129,7 @@ router.get("/add-friend/:username", async (req, res) => {
 });
 
 // accept friend request
-router.get("/accept-friend/:username", async (req, res) => {
+router.get("/accept-request/:username", async (req, res) => {
   const token = await req.cookies.token;
   const { username } = req.params;
   try {
@@ -148,7 +152,7 @@ router.get("/accept-friend/:username", async (req, res) => {
 });
 
 // reject friend request
-router.get("/reject-friend/:username", async (req, res) => {
+router.get("/reject-request/:username", async (req, res) => {
   const token = await req.cookies.token;
   const { username } = req.params;
   try {
@@ -176,10 +180,7 @@ router.get("/remove-friend/:username", async (req, res) => {
       { $pull: { friends: user._id } }
     );
     const you = await User.findOne({ username: token });
-    await User.findOneAndUpdate(
-      { username },
-      { $pull: { friends: you._id } }
-    );
+    await User.findOneAndUpdate({ username }, { $pull: { friends: you._id } });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }

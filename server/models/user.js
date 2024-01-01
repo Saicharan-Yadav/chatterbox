@@ -60,8 +60,18 @@ const userSchema = new Schema({
     },
   ],
   bio: String,
-  isFriend: Boolean,
-  isRequested: Boolean,
+  isFriend: {
+    type: Boolean,
+    default: false,
+  },
+  isRequested: {
+    type: Boolean,
+    default: false,
+  },
+  isPending: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
