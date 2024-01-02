@@ -136,9 +136,7 @@ const FriendRequestsPage = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "100%",
-        overflowY: "scroll",
+        height: "100%",
         padding: "0% 5%",
       }}
     >

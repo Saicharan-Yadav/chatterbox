@@ -37,7 +37,6 @@ const NewPostPage = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
       }}
     >
       <Grid container spacing={2} justifyContent="center">

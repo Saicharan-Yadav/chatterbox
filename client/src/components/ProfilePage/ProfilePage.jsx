@@ -134,9 +134,6 @@ const ProfilePage = ({ username }) => {
         display: "flex",
         gap: "30px",
         flexDirection: "column",
-        height: "100vh",
-        width: "100%",
-        overflowY: "scroll",
         padding: "0% 5%",
       }}
     >

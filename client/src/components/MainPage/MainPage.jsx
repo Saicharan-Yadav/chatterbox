@@ -15,15 +15,30 @@ const MainPage = ({ page, logout }) => {
     <Box
       sx={{
         display: "flex",
-        maxHeight: "100vh",
+        height: "100vh",
+        gap: "20px",
+        backgroundColor: "#c4c4c4",
       }}
     >
       <NavigationalBar logout={logout} />
-      {page === "home" && <HomePage />}
-      {page === "search" && <SearchPage />}
-      {page === "profile" && <ProfilePage username={id} />}
-      {page === "friend-requests" && <FriendRequestsPage />}
-      {page === "newpost" && <NewPostPage />}
+      <Box
+        sx={{
+          maxHeight: "100vh",
+          width: "100%",
+          overflowY: "scroll",
+          backgroundColor: "#fff",
+          borderRadius: "20px",
+          margin: "10px 0 10px 0px",
+          boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
+          paddingTop: "10px",
+        }}
+      >
+        {page === "home" && <HomePage />}
+        {page === "search" && <SearchPage />}
+        {page === "profile" && <ProfilePage username={id} />}
+        {page === "friend-requests" && <FriendRequestsPage />}
+        {page === "newpost" && <NewPostPage />}
+      </Box>
     </Box>
   );
 };

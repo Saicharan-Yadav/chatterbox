@@ -26,7 +26,7 @@ const HomePage = () => {
           user: "https://random.imagecdn.app/50/50",
           username: "Jane Doe",
           text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        }
+        },
       ],
     },
     {
@@ -41,25 +41,15 @@ const HomePage = () => {
     <Box
       sx={{
         alignContent: "center",
-        height: "100vh",
-        width: "100%",
-        overflowY: "scroll",
+        height: "100%",
         padding: "0% 20%",
       }}
     >
-      <Box
-        sx={{
-          alignContent: "center",
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        {posts.map((post) => (
-          <Grid item xs={12} sm={6} md={4} key={post.id}>
-            <PostCard {...post} />
-          </Grid>
-        ))}
-      </Box>
+      {posts.map((post) => (
+        <Grid item xs={12} sm={6} md={4} key={post.id}>
+          <PostCard {...post} />
+        </Grid>
+      ))}
     </Box>
   );
 };
